@@ -1,0 +1,61 @@
+{%extends 'plantilla.html'%}
+
+{%block body%}
+
+<h1 class="display-1 text-center mt-5 mb-5 text-danger" >Agregar Paciente</h1>
+
+<div class="col-md-6 mt-5 rounded p-4 shadow-sm mx-auto">
+    <div class="border rounded p-4 bg-dark text-white"> 
+        <form class="Formulario" action="/guardarc" method="POST">
+
+            <div class="form-group">
+            
+            <label for="fecha">Fecha</label>
+            <input type="text" class="form-control" name="fecha">
+                
+               
+
+            <label for="Fecha">Peso</label>
+            <input type="text" class="form-control" name="peso">
+
+
+            <label for="Enfermedades">Altura</label>
+            <input type="text" class="form-control" name="altura">
+
+            <label for="Enfermedades">Temperatura</label>
+            <input type="text" class="form-control" name="temperatura">
+
+
+            <label for="Enfermedades">Latidos</label>
+            <input type="text" class="form-control" name="latidos">
+
+            
+            <label for="">Glucosa</label>
+            <input type="text" class="form-control" name="glucosa">
+        
+           
+
+            <label for="Alergias">Sintomas</label>
+            <textarea type="text" class="form-control" name="sintomas"></textarea>
+        
+       
+
+            <label for="Antecedentes">Diagnostico</label>
+            <textarea type="text" class="form-control" name="diagnostico" ></textarea>
+
+            <label for="Antecedentes">Tratamiento</label>
+            <textarea type="text" class="form-control" name="tratamiento" ></textarea>
+        
+    
+
+        
+            </div>
+
+            <button type="submit" class="btn btn-primary">Nueva Consulta</button>
+        </form>
+    </div>
+</div>
+
+
+
+{%endblock%}
