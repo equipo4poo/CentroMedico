@@ -30,6 +30,22 @@ def index():
 def registrarm():
     return render_template('adMedicos.html')
 
+@app.route('/registrarp')
+def registrarp():
+    return render_template('registrarPac.html')
+
+@app.route('/conpac')
+def concon():
+    return render_template('consultarPac.html')
+
+@app.route('/editar/<id>')
+def editar(id):
+    curEditar=mysql.connection.cursor()
+    curEditar.execute('Select * from adpac where idPac=%s',(id,))
+    consultid=curEditar.fetchone()
+
+    return render_template("editarPac.html",album=consultid)
+
 
 
 @app.route('/iniciar', methods=['POST'])
@@ -60,13 +76,16 @@ def guardar():
         CS = mysql.connection.cursor()
         CS.execute('insert into adpac (nombreP,fecha_nac,encronias,alergias,antecedentes) values(%s,%s,%s,%s,%s)',(nombre,fecha,enfermedades,alergias,antecedentes))
         mysql.connection.commit()
-
+        
+        CS.execute('SELECT LAST_INSERT_ID()')
+        inserted_id = CS.fetchone()[0]
+    
     flash('Usuario guardado')
-    return render_template("registrarCon.html")
+    return render_template("registrarCon.html", id=inserted_id)
 
 
-@app.route('/guardarc',methods=['POST'])
-def guardarc():
+@app.route('/guardarc/<id>',methods=['POST'])
+def guardarc(id):
     if request.method == 'POST':
         fecha= request.form['fecha']
         peso= request.form['peso']
@@ -78,7 +97,7 @@ def guardarc():
         diagnostico= request.form['diagnostico']
         tratamiento= request.form['tratamiento']
         CS = mysql.connection.cursor()
-        CS.execute('insert into adcon (cfecha,peso,altura,temperatura,latidos,glucosa,sintomas,diagnostico,tratamiento) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)',(fecha,peso,altura,temperatura,latidos,glucosa,sintomas,diagnostico,tratamiento))
+        CS.execute('insert into adcon (cfecha,peso,altura,temperatura,latidos,glucosa,sintomas,diagnostico,tratamiento,idp) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(fecha,peso,altura,temperatura,latidos,glucosa,sintomas,diagnostico,tratamiento,id))
         mysql.connection.commit()
 
     flash('Usuario guardado')
@@ -102,6 +121,46 @@ def guardarm():
     flash('Usuario guardado')
     return render_template("registrarCon.html")
 
+
+
+
+@app.route('/consultarp', methods=['POST'])
+def consultarp():
+    if request.method == 'POST':
+        nombre= request.form['nombre']
+        curselect=mysql.connection.cursor()
+        curselect.execute('select * from adpac where nombreP like %s',("%"+nombre+"%",))
+        consulta=curselect.fetchall()
+        print(consulta)
+        return render_template('consultarPac.html',consultap=consulta)
+    
+    
+@app.route('/editarPaciente/<id>', methods=['POST'])
+def editarPaciente(id):
+    if request.method == 'POST':
+        nombreEdit= request.form['txtpacEdit']
+        nombre= request.form['txtpac']
+        fecha= request.form['fecha']
+        enfermedades= request.form['enfermedades']
+        alergias= request.form['alergias']
+        antecedentes= request.form['antecedentes']
+        CS= mysql.connection.cursor()
+        CS.execute("UPDATE adpac SET nombreP=%s, fecha_nac=%s, encronias=%s, alergias=%s, antecedentes=%s WHERE nombreP=%s", (nombre,fecha,enfermedades,alergias,antecedentes,nombreEdit))
+        
+
+    return render_template('consultarPac.html')
+
+
+@app.route('/concit/<id>')
+def concit(id):
+
+    curselect=mysql.connection.cursor()
+    curselect.execute('select * from adcon where idp=%s',(id,))
+    consulta=curselect.fetchall()
+    print(consulta)
+    return render_template('consultarTodo.html',consultap=consulta)
+
 #ejecucion 
 if __name__== '__main__':
     app.run(port= 5000, debug=True)
+
