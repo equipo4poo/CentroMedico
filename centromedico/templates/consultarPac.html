@@ -51,7 +51,7 @@
                 <a href="/concit/{{ alb[0] }}" >Ver archivo</a>
             </td>
             <td colspan="0" class="table-active">
-                <a href="/guardarc/{{ alb[0] }}" >Nueva Consulta</a>
+                <a href="{{ url_for('guardarc', id=alb[0]) }}">Nueva Consulta</a>
             </td>
        
         </tr>

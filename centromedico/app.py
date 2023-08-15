@@ -1,3 +1,4 @@
+
 from flask import Flask,render_template,request,redirect,url_for,flash
 from flask_mysqldb import MySQL
 
@@ -29,6 +30,17 @@ def index():
 @app.route('/registrarm')
 def registrarm():
     return render_template('adMedicos.html')
+
+#@app.route('/registrarc/<id>')
+#def registrarc(id):
+#    return render_template('registrarCon.html',id)
+
+@app.route('/guardarc/<id>', methods=['GET', 'POST'])
+def guardarc(id):
+    if request.method == 'POST':
+        # ... (your existing POST handling code)
+        flash('Consulta guardada')
+        return render_template("registrarCon.html", id=id) 
 
 @app.route('/registrarp')
 def registrarp():
@@ -80,7 +92,7 @@ def guardar():
         CS.execute('SELECT LAST_INSERT_ID()')
         inserted_id = CS.fetchone()[0]
     
-    flash('Usuario guardado')
+    flash('Paciente guardado')
     return render_template("registrarCon.html", id=inserted_id)
 
 
@@ -100,9 +112,18 @@ def guardarc(id):
         CS.execute('insert into adcon (cfecha,peso,altura,temperatura,latidos,glucosa,sintomas,diagnostico,tratamiento,idp) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(fecha,peso,altura,temperatura,latidos,glucosa,sintomas,diagnostico,tratamiento,id))
         mysql.connection.commit()
 
-    flash('Usuario guardado')
+    flash('Consulta guardada')
     return render_template("registrarCon.html")
 
+
+@app.route('/consultarM')
+def consultarM():
+
+    curselect=mysql.connection.cursor()
+    curselect.execute('select * from admedicos')
+    consulta=curselect.fetchall()
+    print(consulta)
+    return render_template('consultarMed.html',consultam=consulta)
 
 
 @app.route('/guardarm',methods=['POST'])
