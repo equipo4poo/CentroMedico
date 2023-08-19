@@ -1,0 +1,48 @@
+{%extends 'plantilla.html'%}
+
+{%block body%}
+
+<h1 class="display-1 text-center mt-5 mb-5 text-danger" >Consultar Paciente</h1>
+
+
+<table class="table table-bordered">
+    <thead>
+        <tr class="table-active">
+            <td>RFC:</td>
+            <td>Nombre:</td>
+            <td>Cedula:</td>
+            <td>Correo:</td>
+            <td>Contraseña:</td>
+            <td>Rol:</td>
+            <td>Eliminar:</td>
+            <td>Editar:</td>
+
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for alb in consultam %} 
+                        
+            <tr>
+                <td colspan="0" class="table-active">{{ alb[0] }}</td>
+                <td colspan="0" class="table-active">{{ alb[1] }}</td>
+                <td colspan="0" class="table-active">{{ alb[2] }}</td>
+                <td colspan="0" class="table-active">{{ alb[3] }}</td>
+                <td colspan="0" class="table-active">{{ alb[4] }}</td>
+                <td colspan="0" class="table-active">{{ alb[5] }}</td>
+                <td colspan="0" class="table-active">{{ alb[5] }}</td>
+                <td colspan="0" class="table-active">
+                    <a href="/eliminar/{{ alb[0] }}">Eliminar</a>
+                </td>
+                <td colspan="0" class="table-active">
+                    <a href="/editar/{{ alb[0] }}">Editar</a>
+                </td>
+
+                <td colspan="0" class="table-active">
+                
+               
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{%endblock%}

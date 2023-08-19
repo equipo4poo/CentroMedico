@@ -1,0 +1,52 @@
+{%extends 'plantilla.html'%}
+
+{%block body%}
+
+<div class="col-md-5 mt-5 rounded p-4 shadow-sm mx-auto">
+    <div class="border rounded p-4 bg-dark text-white"> 
+        <form class="Formulario" action="/cambiarMedico" method="POST">
+
+            <div class="mb-3">
+            <h1 class="display-3 text-center mt-2 mb-2 text-danger" >Editar Medico</h1>
+            </div>
+
+            <div class="form-group">
+
+                <div class="mb-5">
+                <label for="Editarm">Nombre del Medico a Editar</label>
+                <input type="text" class="form-control" name='medEdit'>
+                </div>
+                
+                <label for="newNombre2">Nuevo nombre del Medico</label>
+                <input type="text" class="form-control" name="newnombreMed">
+
+                <label for="newCedula">Cedula</label>
+                <input type="text" class="form-control" name="newcedulaMed">
+
+                <label for="newCorreo">Correo Electronico</label>
+                <input type="text" class="form-control" name="newcorreoMed" >
+
+                <label for="newContraseña">Contraseña</label>
+                <input type="text" class="form-control" name="newcontraMed">
+
+                <div class="mb-5">
+                    <label for="newRol">Rol</label>
+                    <input type="text" class="form-control" name="newRol" >
+                </div>
+
+            </div>
+        
+            <div class="mb-3">
+            <div class="d-grid gap-5">
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Editar</button>
+            </div>
+            </div>
+            
+
+        </form>
+    </div>
+</div>
+
+
+
+{%endblock%}

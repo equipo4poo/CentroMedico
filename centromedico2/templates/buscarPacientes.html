@@ -1,0 +1,37 @@
+{%extends 'plantilla.html'%}
+
+{%block body%}
+
+<div class="col-md-6 mt-4 rounded p-5 shadow-sm mx-auto">
+    <div class="border rounded p-4 bg-dark text-white"> 
+        <form class="Formulario" action="/consultarPaciente" method="POST">
+
+            <div class="mb-4">
+            <h1 class="display-3 text-center mt-2 mb-2 text-danger" >Buscar Consultas</h1>
+            </div>
+
+            <div class="form-group">
+
+                <div class="mb-5">
+                <label for="nommedi">Nombre del Medico</label>
+                <input type="text" class="form-control" name='nommedi'>
+                </div>
+                
+            </div>
+        
+            <div class="mb-4">
+            <div class="d-grid gap-5">
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Buscar</button> 
+            </div>
+            </div>
+
+        </form>
+
+        
+
+    </div>
+</div>
+
+
+
+{%endblock%}

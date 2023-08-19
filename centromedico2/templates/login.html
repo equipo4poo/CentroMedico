@@ -1,0 +1,58 @@
+{%extends 'plantilla2.html'%}
+
+{%block body%}
+
+<div class="col-md-6 mt-5 rounded p-4 shadow-sm mx-auto">
+    <div class="border rounded p-4 bg-dark text-white"> 
+        <form class="Formulario" action="/iniciar" method="POST">
+
+            <h1 class="display-3 text-center mt-2 mb-2 text-danger font-italic" >Inicia sesión</h1>
+
+            <div class="form-group">
+            
+            <div class="mb-3">
+            <label for="RFC" class="font-italic">RFC Medico</label>
+            <input type="text" class="form-control" name="txtrfc2" required>
+            </div>
+            
+           
+            <div class="mb-3">
+            <label for="con" class="font-italic">Contraseña</label>
+            <input type="text" class="form-control" name="txtpassword2" required>
+            </div>
+                
+            </div>
+
+            <div class="mb-3">
+            <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
+            </div>
+            </div>
+
+            <script>
+                function validarFormulario() {
+                    var txtrfc = document.getElementById("nombre").value;
+                    var txtpassword = document.getElementById("contraseña").value;
+                    
+                    if (nombre === "" || contraseña === "") {
+                        alert("Por favor, complete el campo");
+                        return false;
+                    }
+
+                    return true; 
+                }
+            </script>
+                
+                
+                
+                
+                
+                                
+        
+        </form>
+    </div>
+</div>
+
+
+
+{%endblock%}

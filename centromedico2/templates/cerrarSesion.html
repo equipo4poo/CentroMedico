@@ -1,0 +1,28 @@
+{%extends 'plantilla.html'%}
+
+{%block body%}
+
+<div class="col-md-6 mt-5 rounded p-4 shadow-sm mx-auto">
+    <div class="border rounded p-4 bg-dark text-white"> 
+        <form class="Formulario" action="/cerrarsesion" method="POST">
+
+            <div class="mb-5">
+            <h1 class="display-1 text-center mt-2 mb-2 text-danger" >Cerrar Sesion</h1>
+            </div>
+            <br>
+            <br>
+            <div class="mb-5">
+            <div class="d-grid gap-5">
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Cerrar Sesion</button> 
+            
+            </div>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+
+{%endblock%}

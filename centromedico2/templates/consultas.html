@@ -1,0 +1,52 @@
+{%extends 'plantilla.html'%}
+
+{%block body%}
+
+<h1 class="display-1 text-center mt-5 mb-5 text-danger" >Consultar Paciente</h1>
+
+<div class="col-md-13 d-flex justify-content-center">
+<table class="table table-bordered table-dark">
+    <thead>
+        <tr class="table-active">
+            <td>Nombre</td>
+            <td>Fecha:</td>
+            <td>Peso:</td>
+            <td>Altura:</td>
+            <td>Temperatura:</td>
+            <td>Latidos:</td>
+            <td>Glucosa:</td>
+            <td>Sintomas:</td>
+            <td>Diagnostico:</td>
+            <td>Tratamiento:</td>
+            <td>Medico que lo atendio:</td>
+           
+            
+            
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for alb in consultam %} 
+                        
+            <tr>
+                <td colspan="0" class="table-active">{{ alb[0] }}</td>
+                <td colspan="0" class="table-active">{{ alb[1] }}</td>
+                <td colspan="0" class="table-active">{{ alb[2] }}</td>
+                <td colspan="0" class="table-active">{{ alb[3] }}</td>
+                <td colspan="0" class="table-active">{{ alb[4] }}</td>
+                <td colspan="0" class="table-active">{{ alb[5] }}</td>
+                <td colspan="0" class="table-active">{{ alb[6] }}</td>
+                <td colspan="0" class="table-active">{{ alb[7] }}</td>
+                <td colspan="0" class="table-active">{{ alb[8] }}</td>
+                <td colspan="0" class="table-active">{{ alb[9] }}</td>
+                <td colspan="0" class="table-active">{{ alb[10] }}</td>
+            
+                
+                
+               
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{%endblock%}

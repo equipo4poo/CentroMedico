@@ -1,5 +1,6 @@
-from flask import Flask,render_template,request,redirect,url_for,flash,session
-import pdfkit
+
+from flask import Flask,render_template,request,redirect,url_for,flash
+import bcrypt
 from flask_mysqldb import MySQL
 
 
@@ -23,15 +24,9 @@ mysql=MySQL(app)
 
 #ruta index o principal http://localhost:5000
 #la ruta se compone de nombre y la funcion
-def is_authenticated():
-    return 'authenticated' in session
-
 @app.route('/')
 def index():
-    if is_authenticated():
-        return render_template('login.html')  # Change this to your authenticated page
-    else:
-        return render_template('login.html')
+    return render_template('login.html')
 
 @app.route('/registrarm')
 def registrarm():
@@ -42,23 +37,16 @@ def registrarm():
 #    return render_template('registrarCon.html',id)
 
 
-
 @app.route('/registrarp')
 def registrarp():
-    if is_authenticated():
-        return render_template('registrarPac.html')
-    else:
-        return redirect(url_for('index'))
+    return render_template('registrarPac.html')
 
 @app.route('/conpac')
 def concon():
-    if is_authenticated():
-        return render_template('consultarPac.html')
-    else:
-        return render_template('login.html')
+    return render_template('consultarPac.html')
 
 @app.route('/editar/<id>')
-def editar(id):
+def editarp(id):
     curEditar=mysql.connection.cursor()
     curEditar.execute('Select * from adpac where idPac=%s',(id,))
     consultid=curEditar.fetchone()
@@ -69,17 +57,19 @@ def editar(id):
 
 @app.route('/iniciar', methods=['POST'])
 def iniciar():
-    nombre = request.form['txtrfc']
-    contrasena = request.form['txtpassword']
-    CS = mysql.connection.cursor()
-    CS.execute('select * from admedicos where rfcmed=(%s) and contrasena=(%s)', (nombre, contrasena))
-    if CS.rowcount == 1:
-        session['authenticated'] = True
-        flash('Acceso correcto')
-        return redirect(url_for('registrarp'))  # Redirect to authenticated page
-    else:
-        flash('Usuario o contraseña incorrecta')
-        return render_template('login.html')
+
+        nombre= request.form['txtrfc']
+        contrasena= request.form['txtpassword']
+        CS = mysql.connection.cursor()
+        CS.execute('select * from admedicos where rfcmed=(%s) and contrasena=(%s)', (nombre,contrasena))
+       
+        if (CS.rowcount == 1):
+            
+            flash('Acceso correcto')
+            return render_template('registrarPac.html')
+        else:
+            flash('Usuario o contraseña incorrecta')
+            return render_template('login.html')
 
 
 @app.route('/guardarp',methods=['POST'])
@@ -120,36 +110,6 @@ def guardarc(id):
     flash('Consulta guardada')
     return render_template("registrarCon.html")
 
-
-'''@app.route('/guardarc/<id>', methods=['POST'])
-def guardarc(id):
-    if request.method == 'POST':
-        # ... (existing code)
-        fecha= request.form['fecha']
-        peso= request.form['peso']
-        altura= request.form['altura']
-        temperatura= request.form['temperatura']
-        latidos= request.form['latidos']
-        glucosa= request.form['glucosa']
-        sintomas= request.form['sintomas']
-        diagnostico= request.form['diagnostico']
-        tratamiento= request.form['tratamiento']
-
-        # Generate the HTML content for the PDF
-        html_content = render_template('registrarCon.html', id=id, fecha=fecha, peso=peso, altura=altura, temperatura=temperatura, latidos=latidos, glucosa=glucosa, sintomas=sintomas, diagnostico=diagnostico, tratamiento=tratamiento)
-
-        # Generate PDF using pdfkit
-        pdf = pdfkit.from_string(html_content, False)
-
-        # Save PDF to the database
-        
-        CS = mysql.connection.cursor()
-        CS.execute('insert into adcon (cfecha, peso, altura, temperatura, latidos, glucosa, sintomas, diagnostico, tratamiento, idp, pdf_data) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', (fecha, peso, altura, temperatura, latidos, glucosa, sintomas, diagnostico, tratamiento, id, pdf))
-        mysql.connection.commit()
-
-    flash('Consulta guardada')
-    return render_template("registrarCon.html")
-'''
 
 @app.route('/consultarM')
 def consultarM():
@@ -194,7 +154,7 @@ def consultarp():
 @app.route('/editarPaciente/<id>', methods=['POST'])
 def editarPaciente(id):
     if request.method == 'POST':
-
+        nombreEdit= request.form['txtpacEdit']
         nombre= request.form['txtpac']
         fecha= request.form['fecha']
         enfermedades= request.form['enfermedades']
@@ -225,7 +185,7 @@ def eliminar(rfc):
     return render_template('eliminarMedico.html', album = consulId)
 
 @app.route('/delete',methods=['POST'])
-def delate():
+def delete():
     if request.method == 'POST':
         rfc2= request.form['RFC']
         curactualizar = mysql.connection.cursor()
@@ -242,6 +202,23 @@ def editarm(rfc):
     consulId = cursoeli.fetchone()
     return render_template('eliminarMedico.html', album = consulId)
 
+@app.route('/deletep',methods=['POST'])
+def delate():
+    if request.method == 'POST':
+        rfc2= request.form['RFC']
+        nombre= request.form['Nombre']
+        cedula= request.form['Cedula']
+        correo= request.form['Correo']
+        contra= request.form['Contraseña']
+        correo= request.form['Correo']
+        rol= request.form['Rol']
+        
+        curactualizar = mysql.connection.cursor()
+        curactualizar.execute("UPDATE admedicos SET nombre=%s, cedula=%s, correo=%s, contrasena=%s, rol=%s WHERE rfcmed=%s", (nombre,cedula,correo,contra,rol,rfc2))
+        mysql.connection.commit()
+
+    flash('Album Eliminado Correctamente bro')
+    return render_template('ConsultarMed.html')
 
 #ejecucion 
 if __name__== '__main__':
