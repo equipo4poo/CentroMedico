@@ -1,5 +1,5 @@
 from flask import Flask,render_template,request,redirect,url_for,flash,session
-import pdfkit
+import pdfkit,bcrypt
 from flask_mysqldb import MySQL
 
 
@@ -26,6 +26,11 @@ mysql=MySQL(app)
 def is_authenticated():
     return 'authenticated' in session
 
+@app.before_request
+def require_login():
+    if not is_authenticated() and request.endpoint != 'index':
+        return redirect(url_for('index'))
+
 @app.route('/')
 def index():
     if is_authenticated():
@@ -34,8 +39,35 @@ def index():
         return render_template('login.html')
 
 @app.route('/registrarm')
+@require_login
 def registrarm():
-    return render_template('adMedicos.html')
+    
+    if is_authenticated():
+        return render_template('adMedicos.html')
+    else:
+        return render_template('login.html')
+
+
+@app.route('/consultarm')
+def consultarm():
+    if is_authenticated():
+        curEditar=mysql.connection.cursor()
+        curEditar.execute('Select * from adpac where idPac=%s',(id,))
+        consultid=curEditar.fetchall()
+        return render_template('adMedicos.html',medicos=consultid)
+    else:
+        return render_template('login.html')
+
+
+@app.route('/newcon/<id>')
+def newcon(id):
+    curEditar=mysql.connection.cursor()
+    curEditar.execute('Select * from adpac where idPac=%s',(id,))
+    consultid=curEditar.fetchone()
+
+    return render_template('registrarCon2.html',album=consultid)
+
+
 
 #@app.route('/registrarc/<id>')
 #def registrarc(id):
@@ -57,16 +89,16 @@ def concon():
     else:
         return render_template('login.html')
 
-@app.route('/editar/<id>')
-def editar(id):
+@app.route('/editarp/<id>')
+def editarp(id):
     curEditar=mysql.connection.cursor()
-    curEditar.execute('Select * from adpac where idPac=%s',(id,))
+    curEditar.execute('Select * from adpac where idPac=%s',(id))
     consultid=curEditar.fetchone()
 
     return render_template("editarPac.html",album=consultid)
 
 
-
+'''
 @app.route('/iniciar', methods=['POST'])
 def iniciar():
     nombre = request.form['txtrfc']
@@ -84,21 +116,25 @@ def iniciar():
 
 @app.route('/guardarp',methods=['POST'])
 def guardar():
-    if request.method == 'POST':
-        nombre= request.form['txtpac']
-        fecha= request.form['fecha']
-        enfermedades= request.form['enfermedades']
-        alergias= request.form['alergias']
-        antecedentes= request.form['antecedentes']
-        CS = mysql.connection.cursor()
-        CS.execute('insert into adpac (nombreP,fecha_nac,encronias,alergias,antecedentes) values(%s,%s,%s,%s,%s)',(nombre,fecha,enfermedades,alergias,antecedentes))
-        mysql.connection.commit()
+    if is_authenticated():
+        if request.method == 'POST':
+            nombre= request.form['txtpac']
+            fecha= request.form['fecha']
+            enfermedades= request.form['enfermedades']
+            alergias= request.form['alergias']
+            antecedentes= request.form['antecedentes']
+            CS = mysql.connection.cursor()
+            CS.execute('insert into adpac (nombreP,fecha_nac,encronias,alergias,antecedentes,rfcmed) values(%s,%s,%s,%s,%s)',(nombre,fecha,enfermedades,alergias,antecedentes,session[0]))
+            mysql.connection.commit()
         
-        CS.execute('SELECT LAST_INSERT_ID()')
-        inserted_id = CS.fetchone()[0]
+            CS.execute('SELECT LAST_INSERT_ID()')
+            inserted_id = CS.fetchone()[0]
     
-    flash('Paciente guardado')
-    return render_template("registrarCon.html", id=inserted_id)
+        flash('Paciente guardado')
+        return render_template("registrarCon.html", id=inserted_id)
+    else:
+        return render_template('login.html')'''
+    
 
 
 @app.route('/guardarc/<id>',methods=['POST'])
@@ -160,7 +196,7 @@ def consultarM():
     print(consulta)
     return render_template('consultarMed.html',consultam=consulta)
 
-
+'''
 @app.route('/guardarm',methods=['POST'])
 def guardarm():
     if request.method == 'POST':
@@ -174,8 +210,99 @@ def guardarm():
         CS.execute('insert into admedicos (rfcmed,nombre,cedula,correo,contrasena,rol) values(%s,%s,%s,%s,%s,%s)',(rfc,nombre,cedula,correo,password,rol))
         mysql.connection.commit()
 
+
     flash('Usuario guardado')
     return render_template("registrarCon.html")
+
+
+Anterior verificada!!!
+@app.route('/iniciar', methods=['POST'])
+def iniciar():
+    nombre = request.form['txtrfc']
+    contrasena = request.form['txtpassword']
+    CS = mysql.connection.cursor()
+    CS.execute('select rfcmed, contrasena from admedicos where rfcmed = %s', (nombre,))
+    user_data = CS.fetchone()
+    
+    
+    provided_password = request.form['txtpassword']
+    hashed_password_from_db = user_data[1]
+    if bcrypt.checkpw(provided_password.encode('utf-8'), hashed_password_from_db.encode('utf-8')):
+        session['authenticated'] = True
+        flash('Acceso correcto')
+        return redirect(url_for('registrarp'))  # Redirect to authenticated page
+    else:
+        flash('Usuario o contraseña incorrecta')
+        return render_template('login.html')'''
+        
+@app.route('/iniciar', methods=['POST'])
+def iniciar():
+    nombre = request.form['txtrfc']
+    contrasena = request.form['txtpassword']
+    CS = mysql.connection.cursor()
+    CS.execute('select rfcmed, contrasena from admedicos where rfcmed = %s', (nombre,))
+    user_data = CS.fetchone()
+
+    provided_password = request.form['txtpassword']
+    hashed_password_from_db = user_data[1]
+    if bcrypt.checkpw(provided_password.encode('utf-8'), hashed_password_from_db.encode('utf-8')):
+        session['authenticated'] = True
+        session['rfc'] = nombre  # Store RFC in the session
+        flash('Acceso correcto')
+        return redirect(url_for('registrarp'))  # Redirect to authenticated page
+    else:
+        flash('Usuario o contraseña incorrecta')
+        return render_template('login.html')
+
+
+
+@app.route('/guardarm', methods=['POST'])
+def guardarm():
+    if request.method == 'POST':
+        rfc = request.form['rfc']
+        nombre = request.form['nombre']
+        cedula = request.form['cedula']
+        correo = request.form['correo']
+        password = request.form['password']
+        rol = request.form['rol']
+        
+        # Hash the password using bcrypt
+        password = request.form['password']
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+        CS = mysql.connection.cursor()
+        CS.execute('insert into admedicos (rfcmed,nombre,cedula,correo,contrasena,rol) values(%s,%s,%s,%s,%s,%s)',
+                   (rfc, nombre, cedula, correo, hashed_password, rol))
+        mysql.connection.commit()
+
+    flash('Usuario guardado')
+    return render_template("registrarCon.html")
+
+@app.route('/guardarp',methods=['POST'])
+def guardar():
+    if is_authenticated():
+        if request.method == 'POST':
+            nombre= request.form['txtpac']
+            fecha= request.form['fecha']
+            enfermedades= request.form['enfermedades']
+            alergias= request.form['alergias']
+            antecedentes= request.form['antecedentes']
+            
+            rfc_medico = session['rfc']  # Retrieve RFC from the session
+            
+            CS = mysql.connection.cursor()
+            CS.execute('insert into adpac (nombreP,fecha_nac,encronias,alergias,antecedentes,rfcmed) values(%s,%s,%s,%s,%s,%s)',
+                       (nombre, fecha, enfermedades, alergias, antecedentes, rfc_medico))
+            mysql.connection.commit()
+
+            CS.execute('SELECT LAST_INSERT_ID()')
+            inserted_id = CS.fetchone()[0]
+
+        flash('Paciente guardado')
+        return render_template("registrarCon.html", id=inserted_id)
+    else:
+        return render_template('login.html')
+
 
 
 
@@ -201,7 +328,7 @@ def editarPaciente(id):
         alergias= request.form['alergias']
         antecedentes= request.form['antecedentes']
         CS= mysql.connection.cursor()
-        CS.execute("UPDATE adpac SET nombreP=%s, fecha_nac=%s, encronias=%s, alergias=%s, antecedentes=%s WHERE idp=%s", (nombre,fecha,enfermedades,alergias,antecedentes,id))
+        CS.execute("UPDATE adpac SET nombreP=%s, fecha_nac=%s, encronias=%s, alergias=%s, antecedentes=%s WHERE idPac=%s", (nombre,fecha,enfermedades,alergias,antecedentes,id))
         
 
     return render_template('consultarPac.html')
