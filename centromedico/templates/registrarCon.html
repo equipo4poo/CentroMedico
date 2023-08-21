@@ -1,7 +1,17 @@
 {%extends 'plantilla.html'%}
 
 {%block body%}
-
+{%with mensajes=get_flashed_messages()%}
+{% if mensajes%}
+    {%for msj in mensajes%}
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            <strong>{{msj}}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+         </div>
+         <script>Swal.fire('Buen Trabajo!','La accion se llevo acabo correctamente','success')</script>
+    {%endfor%}
+{%endif%}
+{%endwith%}
 
 <h1 class="display-1 text-center mt-5 mb-5 text-danger" >Agregar Consulta</h1>
 

@@ -32,13 +32,13 @@ def admin_login_required(f):
     def decorated_function(*args, **kwargs):
         if 'rfc' not in session:
             return render_template('login.html')
-        elif 'rol' in session and session['rol'] == 'admin':
+        elif 'rol' in session and session['rol'] =='admin':
             return f(*args, **kwargs)
         else:
             flash('Solo los médicos con rol admin pueden acceder')
             return render_template('registrarPac.html')
     return decorated_function
-
+'''
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -51,7 +51,7 @@ def login_required(f):
             return render_template('login.html')
     return decorated_function
 
-'''def login_required(f):
+def login_required(f):
     @wraps(f)
     def decorated_fuction(*args, **kwargs):
         if 'rfc' not in session:
@@ -76,13 +76,12 @@ def login_required(f):
     return decorated_function'''
 
 @app.route('/')
-@admin_login_required
 def index():
     return render_template('login.html')
     
 
 @app.route('/registrarm')
-@admin_login_required
+
 def registrarm():
 
     if is_authenticated():
@@ -91,7 +90,7 @@ def registrarm():
         return render_template('login.html')
     
 @app.route('/bf')
-@login_required
+
 def bf():
 
     if is_authenticated():
@@ -102,7 +101,7 @@ def bf():
 
 @app.route('/consultarm')
 @admin_login_required
-@login_required
+
 def consultarm():
     if is_authenticated():
         curEditar=mysql.connection.cursor()
@@ -114,7 +113,7 @@ def consultarm():
 
 
 @app.route('/newcon/<id>')
-@login_required
+
 def newcon(id):
     curEditar=mysql.connection.cursor()
     curEditar.execute('Select * from adpac where idPac=%s',(id,))
@@ -131,7 +130,7 @@ def newcon(id):
 
 
 @app.route('/registrarp')
-@login_required
+
 def registrarp():
     if is_authenticated():
         return render_template('registrarPac.html')
@@ -139,7 +138,7 @@ def registrarp():
         return redirect(url_for('index'))
 
 @app.route('/conpac')
-@login_required
+
 def concon():
     if is_authenticated():
         return render_template('consultarPac.html')
@@ -147,7 +146,7 @@ def concon():
         return render_template('login.html')
 
 @app.route('/editarp/<id>')
-@login_required
+
 def editarp(id):
     curEditar=mysql.connection.cursor()
     curEditar.execute('Select * from adpac where idPac=%s',(id))
@@ -196,7 +195,7 @@ def guardar():
 
 
 @app.route('/guardarc/<id>',methods=['POST'])
-@login_required
+
 def guardarc(id):
     if request.method == 'POST':
         fecha= request.form['fecha']
@@ -247,7 +246,7 @@ def guardarc(id):
 '''
 
 @app.route('/consultarM')
-@admin_login_required
+
 
 def consultarM():
 
@@ -319,7 +318,7 @@ def iniciar():
 
 
 @app.route('/guardarm', methods=['POST'])
-@login_required
+
 def guardarm():
     if request.method == 'POST':
         rfc = request.form['rfc']
@@ -342,7 +341,7 @@ def guardarm():
     return render_template("registrarCon.html")
 
 @app.route('/guardarp',methods=['POST'])
-@login_required
+
 def guardar():
     if is_authenticated():
         if request.method == 'POST':
@@ -372,7 +371,7 @@ def guardar():
 
 
 @app.route('/consultarp', methods=['POST'])
-@login_required
+
 def consultarp():
     if request.method == 'POST':
         nombre= request.form['nombre']
@@ -386,7 +385,7 @@ def consultarp():
     
     
 @app.route('/editarPaciente/<id>', methods=['POST'])
-@login_required
+
 def editarPaciente(id):
     if request.method == 'POST':
 
@@ -403,7 +402,7 @@ def editarPaciente(id):
 
 
 @app.route('/concit/<id>')
-@login_required
+
 def concit(id):
 
     curselect=mysql.connection.cursor()
@@ -414,7 +413,7 @@ def concit(id):
 
 
 @app.route('/eliminar/<rfc>')
-@login_required
+
 def eliminar(rfc):
     cursoeli = mysql.connection.cursor()
     cursoeli.execute('select * from admedicos where rfcmed=%s', (rfc, ))
@@ -422,7 +421,7 @@ def eliminar(rfc):
     return render_template('eliminarMedico.html', album = consulId)
 
 @app.route('/delete/<rfc>',methods=['POST'])
-@login_required
+
 def delate(rfc):
     if request.method == 'POST':
         curactualizar = mysql.connection.cursor()
@@ -433,7 +432,7 @@ def delate(rfc):
     return render_template('consultarMed.html')
 
 @app.route('/editarm/<rfc>')
-@login_required
+
 def editarm(rfc):
     cursoeli = mysql.connection.cursor()
     cursoeli.execute('select * from admedicos where rfcmed=%s', (rfc, ))
@@ -467,5 +466,5 @@ def buscarfecha():
 
 #ejecucion 
 if __name__== '__main__':
-    app.run(port= 8000, debug=True)
+    app.run(port= 5000, debug=True)
 

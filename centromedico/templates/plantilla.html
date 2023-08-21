@@ -4,31 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <title>Mi Plantilla</title>
+    <link rel="icon" href="https://i.pinimg.com/736x/4f/1b/b4/4f1bb4bcd73e789aaf4f27b66215e81f.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+      body {
+          margin: 0;
+          padding: 0;
+          background-image: url(https://radio.uabc.mx/sites/default/files/imagenes/podcast/medicina-umsa.jpg);
+          background-size: cover; /* Ajusta la imagen para que cubra todo el fondo */
+          background-position: center; /* Centra la imagen en el fondo */
+          background-repeat: no-repeat; /* Evita la repetición de la imagen en el fondo */
+      }
+      
+      /* Otros estilos para el contenido de la página */
+    </style>
+       
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    
+
+    <title>CENTRO MÉDICO</title>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+<body class="bg-image" style="background-image: URL(https://previews.123rf.com/images/tonefotografia/tonefotografia1705/tonefotografia170501878/78906498-doctor-medicina-mano-sosteniendo-el-estetoscopio-y-trabajando-con-iconos-m%C3%A9dicos-modernos.jpg)">
+    <nav class="navbar navbar-expand-lg navbar bg-primary"  data-bs-theme="dark">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">Consultorio Medico</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <a class="navbar-brand" href="#">CENTRO MÉDICO</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/registrarp">Registrar Paciente</a>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Doctores
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/registrarm">Registrar Medico</a></li>
+                  <li><a class="dropdown-item" href="/consultarM">Consultar Medico</a></li>
+                </ul>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/conpac">Consultar Paciente</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/bf">Consultar Cita</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/registrarm">Administracion de Medicos</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/consultarM">Consulta Medico</a>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Paciente
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/registrarp">Registrar Paciente</a></li>
+                    <li><a class="dropdown-item" href="/conpac">Consultar Paciente</a></li>
+                  </ul>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Consultas
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Realizar Consulta</a></li>
+                  <li><a class="dropdown-item" href="/bf">Administrar Consultas</a></li>
+                </ul>
               </li>
             </ul>
           </div>
@@ -39,8 +74,11 @@
 
 
     {%endblock%}
-    <div class="alert alert-danger" role="alert">
-        POLÍTICA DE PRIVACIDAD      TÉRMINOS DE SERVICIO        AJUSTAR LA CONFIGURACIÓN DE LAS COOKIES         Copyright © 1994 - 2023 ADM. Todos los derechos reservados.
+
+    <div class="mt-5 text-center">
+      <div class="alert alert-danger" role="alert">
+         Centro Medico UPQ Copyright © 1994 - 2023 ADM. Todos los derechos reservados.
+      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
