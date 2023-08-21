@@ -1,6 +1,7 @@
 from flask import Flask,render_template,request,redirect,url_for,flash,session
 import pdfkit,bcrypt
 from flask_mysqldb import MySQL
+from functools import wraps
 
 
 
@@ -26,22 +27,53 @@ mysql=MySQL(app)
 def is_authenticated():
     return 'authenticated' in session
 
-@app.before_request
-def require_login():
-    if not is_authenticated() and request.endpoint != 'index':
-        return redirect(url_for('index'))
+def admin_login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'rfc' not in session:
+            return render_template('login.html')
+        elif 'rol' in session and session['rol'] == 'admin':
+            return f(*args, **kwargs)
+        else:
+            flash('Solo los médicos con rol admin pueden acceder')
+            return render_template('registrarPac.html')
+    return decorated_function
+
+'''def login_required(f):
+    @wraps(f)
+    def decorated_fuction(*args, **kwargs):
+        if 'rfc' not in session:
+            return render_template('login.html')
+        return f(*args, **kwargs)
+        
+        else:
+            flash('Inicia sesion para continuar')
+            return render_template('login.html')
+
+    
+    return decorated_fuction'''
+    
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'rfc' not in session:
+            flash('Inicia sesión para continuar')
+            return render_template('login.html')
+        else:
+            return f(*args, **kwargs)
+    return decorated_function
 
 @app.route('/')
+@login_required
 def index():
-    if is_authenticated():
-        return render_template('login.html')  # Change this to your authenticated page
-    else:
-        return render_template('login.html')
+    return render_template('login.html')
+    
 
 @app.route('/registrarm')
-@require_login
+@admin_login_required
+@login_required
 def registrarm():
-    
+
     if is_authenticated():
         return render_template('adMedicos.html')
     else:
@@ -49,6 +81,8 @@ def registrarm():
 
 
 @app.route('/consultarm')
+@admin_login_required
+@login_required
 def consultarm():
     if is_authenticated():
         curEditar=mysql.connection.cursor()
@@ -60,6 +94,7 @@ def consultarm():
 
 
 @app.route('/newcon/<id>')
+@login_required
 def newcon(id):
     curEditar=mysql.connection.cursor()
     curEditar.execute('Select * from adpac where idPac=%s',(id,))
@@ -76,6 +111,7 @@ def newcon(id):
 
 
 @app.route('/registrarp')
+@login_required
 def registrarp():
     if is_authenticated():
         return render_template('registrarPac.html')
@@ -83,6 +119,7 @@ def registrarp():
         return redirect(url_for('index'))
 
 @app.route('/conpac')
+@login_required
 def concon():
     if is_authenticated():
         return render_template('consultarPac.html')
@@ -90,6 +127,7 @@ def concon():
         return render_template('login.html')
 
 @app.route('/editarp/<id>')
+@login_required
 def editarp(id):
     curEditar=mysql.connection.cursor()
     curEditar.execute('Select * from adpac where idPac=%s',(id))
@@ -138,6 +176,7 @@ def guardar():
 
 
 @app.route('/guardarc/<id>',methods=['POST'])
+@login_required
 def guardarc(id):
     if request.method == 'POST':
         fecha= request.form['fecha']
@@ -188,6 +227,7 @@ def guardarc(id):
 '''
 
 @app.route('/consultarM')
+@login_required
 def consultarM():
 
     curselect=mysql.connection.cursor()
@@ -237,6 +277,7 @@ def iniciar():
         
 @app.route('/iniciar', methods=['POST'])
 def iniciar():
+    
     nombre = request.form['txtrfc']
     contrasena = request.form['txtpassword']
     CS = mysql.connection.cursor()
@@ -257,6 +298,7 @@ def iniciar():
 
 
 @app.route('/guardarm', methods=['POST'])
+@login_required
 def guardarm():
     if request.method == 'POST':
         rfc = request.form['rfc']
@@ -279,6 +321,7 @@ def guardarm():
     return render_template("registrarCon.html")
 
 @app.route('/guardarp',methods=['POST'])
+@login_required
 def guardar():
     if is_authenticated():
         if request.method == 'POST':
@@ -308,6 +351,7 @@ def guardar():
 
 
 @app.route('/consultarp', methods=['POST'])
+@login_required
 def consultarp():
     if request.method == 'POST':
         nombre= request.form['nombre']
@@ -319,6 +363,7 @@ def consultarp():
     
     
 @app.route('/editarPaciente/<id>', methods=['POST'])
+@login_required
 def editarPaciente(id):
     if request.method == 'POST':
 
@@ -335,6 +380,7 @@ def editarPaciente(id):
 
 
 @app.route('/concit/<id>')
+@login_required
 def concit(id):
 
     curselect=mysql.connection.cursor()
@@ -345,32 +391,49 @@ def concit(id):
 
 
 @app.route('/eliminar/<rfc>')
+@login_required
 def eliminar(rfc):
     cursoeli = mysql.connection.cursor()
     cursoeli.execute('select * from admedicos where rfcmed=%s', (rfc, ))
     consulId = cursoeli.fetchone()
     return render_template('eliminarMedico.html', album = consulId)
 
-@app.route('/delete',methods=['POST'])
-def delate():
+@app.route('/delete/<rfc>',methods=['POST'])
+@login_required
+def delate(rfc):
     if request.method == 'POST':
-        rfc2= request.form['RFC']
         curactualizar = mysql.connection.cursor()
-        curactualizar.execute('delete from admedicos where rfcmed=%s', (rfc2, ))
+        curactualizar.execute('delete from admedicos where rfcmed=%s', (rfc,) )
         mysql.connection.commit()
 
     flash('Album Eliminado Correctamente bro')
-    return render_template('ConsultarMed.html')
+    return render_template('consultarMed.html')
 
 @app.route('/editarm/<rfc>')
+@login_required
 def editarm(rfc):
     cursoeli = mysql.connection.cursor()
     cursoeli.execute('select * from admedicos where rfcmed=%s', (rfc, ))
     consulId = cursoeli.fetchone()
-    return render_template('eliminarMedico.html', album = consulId)
+    return render_template('editarMedico.html', album = consulId)
+
+@app.route('/editm/<rfc>',methods=['POST'])
+def editm(rfc):
+    if request.method == 'POST':
+        newerfcMed= request.form['RFC']
+        newenombreMed= request.form['Nombre']
+        newecedulaMed= request.form['Cedula']
+        newecorreoMed= request.form['Correo']
+        newecontraMed= request.form['Contraseña']
+        neweRol= request.form['Rol']
+        CS= mysql.connection.cursor()
+        CS.execute("UPDATE admedicos SET rfcmed = %s, nombre=%s, cedula=%s, correo=%s, contrasena=%s, rol=%s WHERE rfcmed=%s", (newerfcMed,newenombreMed,newecedulaMed,newecorreoMed,newecontraMed,neweRol,rfc))
+        
+    flash('Usuario modificado')
+    return redirect(url_for('consultarM'))
 
 
 #ejecucion 
 if __name__== '__main__':
-    app.run(port= 5000, debug=True)
+    app.run(port= 8000, debug=True)
 

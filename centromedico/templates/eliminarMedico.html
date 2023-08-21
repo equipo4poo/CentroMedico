@@ -2,11 +2,10 @@
 
 {%block body%}
 
-<h1 class="display-1 text-center mt-5 mb-5 text-danger" >Eliminar Medico</h1>
 
 <div class="col-md-6 mt-5 rounded p-4 shadow-sm mx-auto">
     <div class="border rounded p-4 bg-dark text-white"> 
-        <form class="Formulario" action="/delete" method="POST">
+        <form class="Formulario" action="/delete/{{album.0}}" method="POST">
 
             <h1 class="display-1 text-center mt-5 mb-5 text-danger">Eliminar Registro</h1>
     
@@ -15,12 +14,12 @@
                 <div class="col-md-6 mt-5 rounded p-4 shadow-sm ">
                 <div class="border rounded p-4 bg-dark text-white">    
                     
-                    <div class="mb-3"> <input  class="form-control type="text" name="RFC" value="{{ album.0 }}"> </div>
-                    <div class="mb-3">  <input  class="form-control type="text" name="Nombre" value="{{ album.1 }}"> </div>
-                    <div class="mb-3"> <input  class="form-control type="number" name="Cedula" value="{{ album.2 }}"> </div>
-                    <div class="mb-3"> <input  class="form-control type="number" name="Correo" value="{{ album.3 }}"> </div>
-                    <div class="mb-3"> <input  class="form-control type="number" name="Contraseña" value="{{ album.4 }}"> </div>
-                    <div class="mb-3"> <input  class="form-control type="number" name="Rol" value="{{ album.5 }}"> </div>
+                    <div class="mb-3"> <input  class="form-control type="text" name="RFC" value="{{ album.0 }}" readonly> </div>
+                    <div class="mb-3">  <input  class="form-control type="text" name="Nombre" value="{{ album.1 }}" readonly> </div>
+                    <div class="mb-3"> <input  class="form-control type="number" name="Cedula" value="{{ album.2 }}" readonly> </div>
+                    <div class="mb-3"> <input  class="form-control type="number" name="Correo" value="{{ album.3 }}" readonly> </div>
+                    <div class="mb-3"> <input  class="form-control type="number" name="Contraseña" value="{{ album.4 }}" readonly> </div>
+                    <div class="mb-3"> <input  class="form-control type="number" name="Rol" value="{{ album.5 }}" readonly> </div>
                         
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-outline-success"> Eliminar </button>
