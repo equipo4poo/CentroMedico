@@ -39,6 +39,18 @@ def admin_login_required(f):
             return render_template('registrarPac.html')
     return decorated_function
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'rfc' not in session:
+            return render_template('login.html')
+        elif 'rol' in session and session['rol'] == 'admin' or 'medico':
+            return f(*args, **kwargs)
+        else:
+            flash('Solo los médicos pueden acceder')
+            return render_template('login.html')
+    return decorated_function
+
 '''def login_required(f):
     @wraps(f)
     def decorated_fuction(*args, **kwargs):
@@ -51,7 +63,7 @@ def admin_login_required(f):
             return render_template('login.html')
 
     
-    return decorated_fuction'''
+    return decorated_fuction
     
 def login_required(f):
     @wraps(f)
@@ -61,21 +73,29 @@ def login_required(f):
             return render_template('login.html')
         else:
             return f(*args, **kwargs)
-    return decorated_function
+    return decorated_function'''
 
 @app.route('/')
-@login_required
+@admin_login_required
 def index():
     return render_template('login.html')
     
 
 @app.route('/registrarm')
 @admin_login_required
-@login_required
 def registrarm():
 
     if is_authenticated():
         return render_template('adMedicos.html')
+    else:
+        return render_template('login.html')
+    
+@app.route('/bf')
+@login_required
+def bf():
+
+    if is_authenticated():
+        return render_template('buscarfecha.html')
     else:
         return render_template('login.html')
 
@@ -227,7 +247,8 @@ def guardarc(id):
 '''
 
 @app.route('/consultarM')
-@login_required
+@admin_login_required
+
 def consultarM():
 
     curselect=mysql.connection.cursor()
@@ -432,6 +453,15 @@ def editm(rfc):
     flash('Usuario modificado')
     return redirect(url_for('consultarM'))
 
+@app.route('/buscarfecha', methods=['POST'])
+def buscarfecha():
+    if request.method == 'POST':
+        fechb= request.form['fechb']
+        curselect=mysql.connection.cursor()
+        curselect.execute('select * from adcon where cfecha=%s', (fechb, ))
+        consulta=curselect.fetchall()
+        return render_template('buscarfecha.html',consultam=consulta)
+    print(consulta)
 
 #ejecucion 
 if __name__== '__main__':
