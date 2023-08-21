@@ -376,10 +376,12 @@ def guardar():
 def consultarp():
     if request.method == 'POST':
         nombre= request.form['nombre']
+        rfc_medico = session['rfc']  # Retrieve RFC from the session
         curselect=mysql.connection.cursor()
-        curselect.execute('select * from adpac where nombreP like %s',("%"+nombre+"%",))
+        curselect.execute('select * from adpac where nombreP like %s and rfcmed=%s',("%"+nombre+"%",rfc_medico,))
         consulta=curselect.fetchall()
         print(consulta)
+        
         return render_template('consultarPac.html',consultap=consulta)
     
     
